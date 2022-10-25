@@ -3,12 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from rich.console import Console
-from rich.markdown import Markdown
 console = Console()
 
 import os
-import re
-import sys
 
 def validate_test_cleaning(test_path):
     required_files = [
@@ -39,7 +36,6 @@ def visualise_file(file):
     plot_cdf(file, metric_name, metric_units, df, col_count) 
     
 def plot_cdf(file, metric_name, df):
-    # cdf = df.value_counts().sort_index().cumsum() / df.shape[0]
     stats_df = df \
         .groupby(list(df)[0]) \
         [list(df)[0]] \
