@@ -33,7 +33,7 @@ def visualise_file(file):
     col_count = len(df.columns)
 
     plot_line_graph(file, metric_name, metric_units, df, col_count)
-    plot_cdf(file, metric_name, metric_units, df, col_count) 
+    plot_cdf(file, metric_name, df) 
     
 def plot_cdf(file, metric_name, df):
     stats_df = df \
@@ -58,6 +58,7 @@ def plot_cdf(file, metric_name, df):
     ax.set_xlabel(metric_name)
         
     stats_df.plot(x = list(df)[0], y = ['pdf', 'cdf'], grid=True, ax=ax)
+    plt.grid()
     
     fig.savefig(os.path.join(os.path.dirname(file), metric_name + "_cdf.png"))
     
@@ -76,6 +77,8 @@ def plot_line_graph(file, metric_name, metric_units, df, col_count):
     for col in range(col_count):
         run_data = df.iloc[:, col]
         ax.plot(run_data)
+        
+    plt.grid()
         
     line_graph.savefig(os.path.join(os.path.dirname(file), metric_name + "_line_graph.png"))
     
