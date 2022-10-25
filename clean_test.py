@@ -192,18 +192,31 @@ with console.status("[bold green][1/5] Summarising the latencies[/bold green]") 
         dir_path = os.path.join(test_path, dir)
         pub_path = os.path.join(dir_path, "pub_0_output.csv")
 
-        # ? Check if the csv has more than 35 rows
-        check_df = pd.read_csv(pub_path, skip_blank_lines=True, on_bad_lines='skip')
-        row_count = len(check_df)
-        if (row_count < 35):
-            console.print("\tNot enough data in [bold white]" + pub_path + "[/bold white] to summarise.", style="bold red")
+        
+        with open(pub_path, "r") as csv_file:
+            data = list(csv.reader(csv_file, delimiter=","))
+            
+        # ? Find out which lines have the (us) - all the numbers are between those two rows
+        stopping_points = []
+            
+        for item_list in data:
+            for item in item_list:
+                if "(us)" in item:
+                    stopping_points.append(data.index(item_list))
+        
+        stopping_points = list( set(stopping_points) )
+        
+        if len(stopping_points) > 2:
+            console.print("\tError: More than 2 stopping points found for [bold  white]" + pub_path + "[/bold white]", style="bold red")
             continue
-
+        
         # Measurements start from row 35 onwards
-        df = pd.read_csv(pub_path, skiprows=34, skip_blank_lines=True, on_bad_lines='skip')[" Latency (us)"]
+        df = pd.read_csv(pub_path, skiprows=stopping_points[0], skip_blank_lines=True, on_bad_lines='skip')[" Latency (us)"]
         # df = pd.read_csv(pub_path, skiprows=34, skip_blank_lines=True, on_bad_lines='skip')
         # Remove non-numeric values
         df.dropna(inplace=True)
+        # Remove last row (its the row that averages all the data)
+        df.drop(df.tail(1).index, inplace=True)
         df.name = dir
         
         latencies_csv_path = os.path.join(test_path, "latencies.csv")
