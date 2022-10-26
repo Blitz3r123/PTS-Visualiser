@@ -60,7 +60,10 @@ def plot_cdf(file, metric_name, df):
     stats_df.plot(x = list(df)[0], y = ['pdf', 'cdf'], grid=True, ax=ax)
     plt.grid()
     
-    fig.savefig(os.path.join(os.path.dirname(file), metric_name + "_cdf.png"))
+    filename = os.path.join(os.path.dirname(file), metric_name.replace(" ", "_") + "_cdf.png")
+    filename.replace(" ", "_")
+    
+    fig.savefig(filename)
     
 def plot_line_graph(file, metric_name, metric_units, df, col_count):    
     line_graph, ax = plt.subplots(figsize=(10, 10))
@@ -79,8 +82,11 @@ def plot_line_graph(file, metric_name, metric_units, df, col_count):
         ax.plot(run_data)
         
     plt.grid()
-        
-    line_graph.savefig(os.path.join(os.path.dirname(file), metric_name + "_line_graph.png"))
+    
+    filename = os.path.join(os.path.dirname(file), metric_name.replace(" ", "_") + "_line_graph.png")
+    filename.replace(" ", "_")
+    
+    line_graph.savefig(filename)
     
 def get_x_label(name, graph_type):
     if "line_graph" in graph_type:

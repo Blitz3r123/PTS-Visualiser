@@ -29,10 +29,6 @@ if not (os.path.isdir(camp_path)):
 # Get all folders inside
 sub_dirs = [x for x in os.listdir(camp_path) if os.path.isdir( os.path.join(camp_path, x) )]
 
-# Clean each test
+# Visualise each test
 for i in range(len(sub_dirs)):
     os.system('python visualise_test.py ' + os.path.join(camp_path, sub_dirs[i]) + " " + str(i + 1) + " " + str(len(sub_dirs)))
-
-# Validate that each test is clean
-# for i in range(len(sub_dirs)):
-    # os.system('python visualise_test_check.py ' + os.path.join(camp_path, sub_dirs[i]) + " " + str(i + 1) + " " + str(len(sub_dirs)))

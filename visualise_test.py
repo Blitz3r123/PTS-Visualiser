@@ -1,12 +1,7 @@
 from rich.console import Console
-from rich.markdown import Markdown
-from rich.progress import track
-from pprint import pprint
 
 from visualise_test_functions import *
 
-import csv
-import pandas as pd
 import os
 import sys
 
