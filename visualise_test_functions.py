@@ -54,10 +54,12 @@ def plot_cdf(file, metric_name, df):
     fig.suptitle = metric_name + " " + os.path.dirname(file)
     ax.set_title(metric_name + " " + os.path.dirname(file).replace("\\", " "), fontweight="bold", fontsize=12)
     
-    ax.set_ylabel("F(x)")
-    ax.set_xlabel(metric_name)
         
     stats_df.plot(x = list(df)[0], y = ['pdf', 'cdf'], grid=True, ax=ax)
+    
+    ax.set_ylabel("F(x)")
+    ax.set_xlabel(metric_name)
+    
     plt.grid()
     
     filename = os.path.join(os.path.dirname(file), metric_name.replace(" ", "_") + "_cdf.png")

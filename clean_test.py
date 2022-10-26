@@ -203,21 +203,32 @@ with console.status("[bold green][1/5] Summarising the latencies[/bold green]") 
             for item in item_list:
                 if "(us)" in item:
                     stopping_points.append(data.index(item_list))
-        
+                elif "Length (Bytes)" in item:
+                    stopping_points.append(data.index(item_list))
+                    
         stopping_points = list( set(stopping_points) )
+        stopping_points.sort()
         
         if len(stopping_points) > 2:
             console.print("\tError: More than 2 stopping points found for [bold  white]" + pub_path + "[/bold white]", style="bold red")
             continue
         
-        # Measurements start from row 35 onwards
-        df = pd.read_csv(pub_path, skiprows=stopping_points[0], skip_blank_lines=True, on_bad_lines='skip')[" Latency (us)"]
-        # df = pd.read_csv(pub_path, skiprows=34, skip_blank_lines=True, on_bad_lines='skip')
-        # Remove non-numeric values
-        df.dropna(inplace=True)
-        # Remove last row (its the row that averages all the data)
-        df.drop(df.tail(1).index, inplace=True)
-        df.name = dir
+        try:
+            df = pd.read_csv(pub_path, skiprows=stopping_points[0], skip_blank_lines=True, on_bad_lines='skip')[" Latency (us)"]
+            # df = pd.read_csv(pub_path, skiprows=34, skip_blank_lines=True, on_bad_lines='skip')
+            # Remove non-numeric values
+            df.dropna(inplace=True)
+            # Remove last row (its the row that averages all the data)
+            df.drop(df.tail(1).index, inplace=True)
+            df.name = dir
+        except KeyError as e:
+            print(stopping_points)
+            df = pd.read_csv(pub_path, skiprows=stopping_points[0], skip_blank_lines=True, on_bad_lines='skip', sep=",", index_col=None)
+            pprint(df.columns)
+            console.print(pub_path, style="bold red")
+            console.print(df.head(), style="bold red")
+            console.print(e, style="bold red")
+            continue
         
         latencies_csv_path = os.path.join(test_path, "latencies.csv")
         
