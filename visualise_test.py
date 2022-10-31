@@ -28,6 +28,6 @@ cdf_fig, cdf_ax = plt.subplots(figsize=(10, 10))
 
 for file in valid_csv_files:
     visualise_file(file)
-    # if 'latencies' in file:
-        # plot_pdf(file, pdf_ax)
-        # plot_cdf(file, cdf_ax)
+    if 'latencies' in file:
+        plot_pdf(file, pdf_ax)
+        plot_cdf(file, cdf_ax)

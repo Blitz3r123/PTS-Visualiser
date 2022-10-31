@@ -87,6 +87,7 @@ def plot_line_graph(file, metric_name, metric_units, df):
         ax.plot(df[col], label=col.replace("_", " ").title())
         
     plt.grid()
+    plt.legend()
     
     filename = os.path.join(os.path.dirname(file), metric_name.replace(" ", "_") + "_line_graph.png")
     filename.replace(" ", "_")
