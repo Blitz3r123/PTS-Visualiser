@@ -73,10 +73,10 @@ required_files = [
     "total_samples_cdf.png",
     "total_samples_line_graph.png"
 ]
-# for dir in sub_dirs:
-#     files = [x for x in os.listdir( os.path.join(camp_path, dir) ) if ".png" in x]
-#     missing_files = list(set(required_files) - set(files))
+for dir in sub_dirs:
+    files = [x for x in os.listdir( os.path.join(camp_path, dir) ) if ".png" in x]
+    missing_files = list(set(required_files) - set(files))
     
-#     if len(missing_files) > 0:
-#         console.print("Some graphs are missing from " + dir, style="bold red")
-#         os.system("python visualise_test.py " + os.path.join(camp_path, dir) + " 1 1")
+    if len(missing_files) > 0:
+        console.print("Some graphs are missing from " + dir, style="bold red")
+        os.system("python visualise_test.py " + os.path.join(camp_path, dir) + " 1 1")
