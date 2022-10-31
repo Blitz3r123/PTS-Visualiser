@@ -7,7 +7,7 @@ args = sys.argv[1:]
 # Check that only one argument has been passed.
 if len(args) > 3:
     console.print("You have more than 3 command line argument.", style="bold red")
-    sys.exit
+    sys.exit()
 else:
     test_path = args[0]
     curr_test = args[1]
@@ -28,6 +28,6 @@ cdf_fig, cdf_ax = plt.subplots(figsize=(10, 10))
 
 for file in valid_csv_files:
     visualise_file(file)
-    if 'latencies' in file:
-        plot_pdf(file, pdf_ax)
-        plot_cdf(file, cdf_ax)
+    # if 'latencies' in file:
+        # plot_pdf(file, pdf_ax)
+        # plot_cdf(file, cdf_ax)

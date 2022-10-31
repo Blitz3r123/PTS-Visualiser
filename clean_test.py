@@ -49,22 +49,6 @@ After the script has finished the test should have the following pattern:
     - 📄 total_samples.csv
     - 📄 sample_rates.csv
     - 📄 lost_samples.csv
-    - 📂 throughputs_per_sub
-        - 📄 sub_0.csv
-        - 📄 ...
-        - 📄 sub_n.csv
-    - 📂 total_samples_per_sub
-        - 📄 sub_0.csv
-        - 📄 ...
-        - 📄 sub_n.csv
-    - 📂 sample_rates_per_sub
-        - 📄 sub_0.csv
-        - 📄 ...
-        - 📄 sub_n.csv
-    - 📂 lost_samples_per_sub
-        - 📄 sub_0.csv
-        - 📄 ...
-        - 📄 sub_n.csv
 
 How should the script work?
 1. Check that the test follows the above pattern (the first one) and that there are no extra files or missing files.

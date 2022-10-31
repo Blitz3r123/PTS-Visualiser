@@ -1,4 +1,3 @@
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -34,9 +33,9 @@ def visualise_file(file):
     metric_name = get_metric_name(file)
     metric_units = get_metric_units(metric_name)
     df = pd.read_csv(file)
-    col_count = len(df.columns)
 
-    plot_line_graph(file, metric_name, metric_units, df, col_count)
+    plot_line_graph(file, metric_name, metric_units, df)
+    
     fig, ax = plt.subplots(figsize=(10, 10))
     plot_cdf(file, ax)
 
@@ -71,7 +70,8 @@ def plot_cdf(file, ax):
         ax.legend()
         plt.savefig(os.path.join(os.path.dirname(file), "latencies_cdf.png"))
     
-def plot_line_graph(file, metric_name, metric_units, df, col_count):    
+    
+def plot_line_graph(file, metric_name, metric_units, df):
     line_graph, ax = plt.subplots(figsize=(10, 10))
     line_graph.suptitle = metric_name + " " + os.path.dirname(file)
     
@@ -80,12 +80,11 @@ def plot_line_graph(file, metric_name, metric_units, df, col_count):
     ax.set_ylabel(metric_name.title() + " (" + metric_units + ")")
     ax.set_xlabel(get_x_label(metric_name, "line_graph"))
     
-    ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
-    ax.xaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+    # ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+    # ax.xaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
     
-    for col in range(col_count):
-        run_data = df.iloc[:, col]
-        ax.plot(run_data)
+    for col in df.columns:
+        ax.plot(df[col], label=col.replace("_", " ").title())
         
     plt.grid()
     

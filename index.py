@@ -2,8 +2,11 @@
 ? How to use:
 ? Run `python index.py [test_set_path]`.
 """
+from pprint import pprint
 from rich.console import Console
 console = Console()
+
+import pandas as pd
 
 import sys
 import os
@@ -41,6 +44,20 @@ for dir in sub_dirs:
         console.print("Some clean files are missing from " + dir, style="bold red")
         os.system("python clean_test.py " + os.path.join(camp_path, dir) + " 1 1")
 
+# ? Validate if all files contain only numerics.
+for dir in sub_dirs:
+    files = os.listdir( os.path.join(camp_path, dir) )
+    files = [x for x in files if '.csv' in x]
+    for file in files:
+        df = pd.read_csv( os.path.join(camp_path, dir, file) )
+        for col in df.columns:
+            has_non_numeric = not pd.to_numeric(df[col], errors='coerce').notnull().all()
+            if has_non_numeric:
+                file_path = os.path.join(camp_path, dir, file)
+                console.print("Non-numeric value found in [bold blue]" + file_path + " [/bold blue]for the  column: [bold blue]" + col + "[/bold blue]", style="bold red")
+                df = df[pd.to_numeric(df[col], errors='coerce').notnull()]
+                df.to_csv(file_path, header=df.columns, index=False, mode="w")
+
 # ? Files should have been summarised at this point.
 
 # Check if visualisations already exist
@@ -56,10 +73,10 @@ required_files = [
     "total_samples_cdf.png",
     "total_samples_line_graph.png"
 ]
-for dir in sub_dirs:
-    files = [x for x in os.listdir( os.path.join(camp_path, dir) ) if ".png" in x]
-    missing_files = list(set(required_files) - set(files))
+# for dir in sub_dirs:
+#     files = [x for x in os.listdir( os.path.join(camp_path, dir) ) if ".png" in x]
+#     missing_files = list(set(required_files) - set(files))
     
-    if len(missing_files) > 0:
-        console.print("Some graphs are missing from " + dir, style="bold red")
-        os.system("python visualise_test.py " + os.path.join(camp_path, dir) + " 1 1")
+#     if len(missing_files) > 0:
+#         console.print("Some graphs are missing from " + dir, style="bold red")
+#         os.system("python visualise_test.py " + os.path.join(camp_path, dir) + " 1 1")
