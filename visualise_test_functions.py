@@ -1,11 +1,15 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
+
+from scipy.stats import norm
 
 from rich.console import Console
 console = Console()
 
 import os
+import sys
 
 def validate_test_cleaning(test_path):
     required_files = [
@@ -33,39 +37,39 @@ def visualise_file(file):
     col_count = len(df.columns)
 
     plot_line_graph(file, metric_name, metric_units, df, col_count)
-    plot_cdf(file, metric_name, df) 
-    
-def plot_cdf(file, metric_name, df):
-    stats_df = df \
-        .groupby(list(df)[0]) \
-        [list(df)[0]] \
-        .agg('count') \
-        .pipe(pd.DataFrame) \
-        .rename(columns = {list(df)[0]: 'frequency'})
-    
-    # PDF
-    stats_df['pdf'] = stats_df['frequency'] / sum(stats_df['frequency'])
-    
-    # CDF
-    stats_df['cdf'] = stats_df['pdf'].cumsum()
-    stats_df = stats_df.reset_index()
-    
     fig, ax = plt.subplots(figsize=(10, 10))
-    fig.suptitle = metric_name + " " + os.path.dirname(file)
-    ax.set_title(metric_name + " " + os.path.dirname(file).replace("\\", " "), fontweight="bold", fontsize=12)
-    
-        
-    stats_df.plot(x = list(df)[0], y = ['pdf', 'cdf'], grid=True, ax=ax)
-    
-    ax.set_ylabel("F(x)")
-    ax.set_xlabel(metric_name)
-    
-    plt.grid()
-    
-    filename = os.path.join(os.path.dirname(file), metric_name.replace(" ", "_") + "_cdf.png")
-    filename.replace(" ", "_")
-    
-    fig.savefig(filename)
+    plot_cdf(file, ax)
+
+def plot_pdf(file, ax):
+    df = pd.read_csv(file)
+    for col in df.columns:
+        df.sort_values(by=[col], inplace=True)
+        df_mean = np.mean(df[col])
+        df_std = np.std(df[col])
+        pdf = norm.pdf(df[col], df_mean, df_std)
+        ax.plot(df[col], pdf, label=col.replace("_", " ").title())
+        ax.set_title("Latency PDFs")
+        ax.set_ylabel("Density")
+        ax.set_xlabel("Latency (us)")
+        ax.set_xscale('log')
+        ax.grid()
+        ax.legend()
+        plt.savefig(os.path.join(os.path.dirname(file), "latencies_pdf.png"))
+
+def plot_cdf(file, ax):
+    df = pd.read_csv(file)
+    for col in df.columns:
+        df.sort_values(by=[col], inplace=True)
+        df_mean = np.mean(df[col])
+        df_std = np.std(df[col])
+        cdf = norm.cdf(df[col], df_mean, df_std)
+        ax.plot(df[col], cdf, label=col.replace("_", " ").title())
+        ax.set_title("Latency CDFs")
+        ax.set_ylabel("F(x)")
+        ax.set_xlabel("Latency (us)")
+        ax.grid()
+        ax.legend()
+        plt.savefig(os.path.join(os.path.dirname(file), "latencies_cdf.png"))
     
 def plot_line_graph(file, metric_name, metric_units, df, col_count):    
     line_graph, ax = plt.subplots(figsize=(10, 10))

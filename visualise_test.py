@@ -1,10 +1,6 @@
-from rich.console import Console
-
 from visualise_test_functions import *
 
-import os
-import sys
-
+from rich.console import Console
 console = Console()
 
 args = sys.argv[1:]
@@ -27,5 +23,11 @@ console.print("[" +str(curr_test)+ "/" +str(total_test_count)+ "] Visualising " 
 valid_csv_files = validate_test_cleaning(test_path)
 valid_csv_files = [os.path.join(test_path, file) for file in valid_csv_files]
 
+pdf_fig, pdf_ax = plt.subplots(figsize=(10, 10))
+cdf_fig, cdf_ax = plt.subplots(figsize=(10, 10))
+
 for file in valid_csv_files:
     visualise_file(file)
+    if 'latencies' in file:
+        plot_pdf(file, pdf_ax)
+        plot_cdf(file, cdf_ax)
